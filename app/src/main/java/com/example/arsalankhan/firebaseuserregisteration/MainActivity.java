@@ -1,5 +1,6 @@
 package com.example.arsalankhan.firebaseuserregisteration;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btn_registerUser;
     private FirebaseAuth firebaseAuth;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn_registerUser= (Button) findViewById(R.id.button);
         firebaseAuth=FirebaseAuth.getInstance();
+        progressDialog=new ProgressDialog(this);
 
         btn_registerUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,11 +47,13 @@ public class MainActivity extends AppCompatActivity {
         String email=et_email.getText().toString().trim();
         String password=et_password.getText().toString().trim();
 
+        progressDialog.setMessage("Registrating User, please Wait");
+        progressDialog.show();
         //validation
 
         if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
             firebaseAuth.createUserWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    .addOnCompleteListener(this,new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -57,10 +62,16 @@ public class MainActivity extends AppCompatActivity {
                             }else{
                                 Toast.makeText(MainActivity.this, "User Registration Fail, try again", Toast.LENGTH_SHORT).show();
                             }
+
+                            progressDialog.dismiss();
                         }
+
                     });
 
+
+
         }else{
+            progressDialog.dismiss();
             Toast.makeText(this, "Fill the Fields First", Toast.LENGTH_SHORT).show();
         }
     }
