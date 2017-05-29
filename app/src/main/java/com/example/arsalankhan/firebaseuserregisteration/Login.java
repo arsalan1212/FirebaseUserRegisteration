@@ -1,5 +1,6 @@
 package com.example.arsalankhan.firebaseuserregisteration;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,12 +18,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Login extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         firebaseAuth=FirebaseAuth.getInstance();
+        progressDialog=new ProgressDialog(this);
 
         //User is Already Login
         if(firebaseAuth.getCurrentUser()!=null){
@@ -41,8 +44,11 @@ public class Login extends AppCompatActivity {
         String email=et_email.getText().toString().trim();
         String pass=et_pass.getText().toString().trim();
 
+        progressDialog.setMessage("Logining to User Account");
+        progressDialog.show();
         if(!TextUtils.isEmpty(email) || !TextUtils.isEmpty(pass)){
             if(pass.length()<6){
+                progressDialog.dismiss();
                 et_pass.setError("password must be alteast 6 digits");
             }else{
 
@@ -53,10 +59,12 @@ public class Login extends AppCompatActivity {
 
                                 if(task.isSuccessful()){
 
+                                    progressDialog.dismiss();
                                     finish();
                                     startActivity(new Intent(Login.this,profile.class));
                                 }else{
                                     Toast.makeText(Login.this, "Login Error", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
                                 }
                             }
                         });
@@ -64,6 +72,7 @@ public class Login extends AppCompatActivity {
 
         }else{
             Toast.makeText(this, "Please Fill the Field First", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
     }
 }
