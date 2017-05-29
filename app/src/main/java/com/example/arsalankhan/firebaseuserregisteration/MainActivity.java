@@ -1,6 +1,7 @@
 package com.example.arsalankhan.firebaseuserregisteration;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -74,5 +75,10 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.dismiss();
             Toast.makeText(this, "Fill the Fields First", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void Login(View view){
+        startActivity(new Intent(this,Login.class));
+        finish();
     }
 }
